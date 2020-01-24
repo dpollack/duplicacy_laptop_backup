@@ -1,0 +1,18 @@
+[
+    {
+        "name": "Backblaze_B2_DSS_Backup",
+        "id": "home_full_backup",
+        "repository": "/home",
+        "storage": "b2://dss-backup-duplicacy",
+        "encrypted": true,
+        "no_backup": false,
+        "no_restore": true,
+        "no_save_password": false,
+        "nobackup_file": "",
+        "keys": {
+            "b2_id": "VALID KEYID",
+            "b2_key": "VALID KEY",
+            "password": "config password"
+        }
+    }
+]
