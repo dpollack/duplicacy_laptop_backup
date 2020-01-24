@@ -1,0 +1,46 @@
+#!/bin/bash
+
+if [ -f /root/duplicacy_size_stats ]
+   then
+       mv /root/duplicacy_size_stats /root/duplicacy_size_stats.old
+fi
+
+# /etc 
+cd /root/.duplicacy-config/etc
+/usr/local/bin/duplicacy backup -threads 10 -stats
+
+# /root
+cd /root/.duplicacy-config/root
+/usr/local/bin/duplicacy backup -threads 10 -stats
+
+# /installers 
+cd /root/.duplicacy-config/installers
+/usr/local/bin/duplicacy backup -threads 10 -stats
+
+# /vmshared 
+cd /root/.duplicacy-config/vmshared
+/usr/local/bin/duplicacy backup -threads 10 -stats
+
+# /VM 
+cd /root/.duplicacy-config/VM
+/usr/local/bin/duplicacy backup -threads 10 -stats
+
+# /home
+cd /root/.duplicacy-config/home
+/usr/local/bin/duplicacy backup -threads 10 -stats
+
+# remove snapshots older than 21 days
+# and run exhaustive once every 7
+
+# pipe the day from date to bc to strip preceding zeros on single digit days
+dom=`/bin/date +%d| /usr/bin/bc`
+
+if ! (($dom % 7));
+   then 
+     /usr/local/bin/duplicacy prune -threads 10 -all -exhaustive -exclusive -keep 0:21
+   else 
+     /usr/local/bin/duplicacy prune -threads 10 -all -exclusive -keep 0:21
+fi 
+
+#check storage and report sizes
+/usr/local/bin/duplicacy check -stats |grep -E 'chunk size|all revisions' > /root/duplicacy_size_stats
